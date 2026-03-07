@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -9,17 +9,19 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setSubmitting(true);
     setError('');
+
     try {
-      const res = await api.post('/auth/register', { name, email, password });
-      login(res.data.token, res.data.user);
-      navigate('/');
+      const response = await api.post('/auth/register', { name, email, password });
+      login(response.data.token, response.data.user);
+      navigate('/home');
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Registration failed');
@@ -28,44 +30,70 @@ const RegisterPage = () => {
     }
   };
 
+  const handleGoogleSignup = () => {
+    setError('Google signup UI is ready. Connect it to your OAuth backend endpoint.');
+  };
+
   return (
-    <AuthLayout title="Create your account">
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <Input label="Name" value={name} onChange={setName} />
-        <Input label="Email" type="email" value={email} onChange={setEmail} />
-        <Input label="Password" type="password" value={password} onChange={setPassword} />
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Signing up...' : 'Sign up'}
+    <main className="min-h-screen flex items-center justify-center px-4 py-8">
+      <div className="card w-full max-w-lg p-6 md:p-8 space-y-4" data-anim>
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-bakeryBrown/60">Get Started</p>
+          <h1 className="font-display text-3xl text-bakeryBrown mt-1">Create Your Account</h1>
+        </div>
+
+        <button type="button" onClick={handleGoogleSignup} className="btn-outline w-full">
+          Sign Up with Google
         </button>
-      </form>
-    </AuthLayout>
+
+        <div className="text-center text-xs text-bakeryBrown/60">or register with email</div>
+
+        <form className="space-y-3" onSubmit={handleSubmit}>
+          <label className="block text-xs text-bakeryBrown/80">
+            Full Name
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="input-field mt-1"
+              required
+            />
+          </label>
+
+          <label className="block text-xs text-bakeryBrown/80">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-field mt-1"
+              required
+            />
+          </label>
+
+          <label className="block text-xs text-bakeryBrown/80">
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field mt-1"
+              required
+            />
+          </label>
+
+          {error && <p className="text-xs text-red-600">{error}</p>}
+
+          <button type="submit" className="btn-primary w-full" disabled={submitting}>
+            {submitting ? 'Creating account...' : 'Create Account'}
+          </button>
+        </form>
+
+        <p className="text-xs text-center text-bakeryBrown/70">
+          Already have an account? <Link to="/login" className="underline text-bakeryPrimary">Sign in</Link>
+        </p>
+      </div>
+    </main>
   );
 };
 
-const AuthLayout = ({ title, subtitle, children }) => (
-  <main className="min-h-[70vh] flex items-center justify-center px-4">
-    <div className="card max-w-md w-full p-6 space-y-4">
-      <div>
-        <h1 className="text-xl font-semibold text-bakeryBrown mb-1">{title}</h1>
-        {subtitle && <p className="text-xs text-bakeryBrown/70">{subtitle}</p>}
-      </div>
-      {children}
-    </div>
-  </main>
-);
-
-const Input = ({ label, type = 'text', value, onChange }) => (
-  <label className="block text-xs text-bakeryBrown/80 space-y-1">
-    <span>{label}</span>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-full border border-bakeryPink px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bakeryPeach bg-white"
-    />
-  </label>
-);
-
 export default RegisterPage;
-

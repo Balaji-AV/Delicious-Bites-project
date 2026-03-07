@@ -1,148 +1,96 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { subscribeToLiveEvents } from '../lib/liveEvents';
+import { MENU_CATEGORIES } from '../lib/menuCategories';
 
-const categories = [
-  'All',
-  'Cupcakes',
-  'Chocolates',
-  'Cookies',
-  'Classic Brownies',
-  'Special Brownies',
-  'Classic Fruit Cakes',
-  'Special Cakes',
-  'Blondies',
-  'Donuts'
-];
+const categories = ['All', ...MENU_CATEGORIES];
+
+const normalize = (value) => (value || '').toLowerCase().replace(/\s+/g, ' ').trim();
 
 const MenuPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [category, setCategory] = useState('All');
-  const { user } = useAuth();
+
+  const loadProducts = async () => {
+    try {
+      const response = await api.get('/products');
+      setProducts(response.data || []);
+      setError('');
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load menu. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await api.get('/products');
-        setProducts(res.data);
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load menu.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+    loadProducts();
   }, []);
 
-  const filtered =
-    category === 'All'
-      ? products
-      : products.filter((p) => p.category.toLowerCase() === category.toLowerCase());
+  useEffect(() => {
+    const unsubscribe = subscribeToLiveEvents((event) => {
+      if (event.type === 'products-changed') {
+        loadProducts();
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    if (category === 'All') return products;
+    return products.filter((product) => normalize(product.category) === normalize(category));
+  }, [products, category]);
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-6 space-y-8">
-      <section className="grid md:grid-cols-2 gap-6 items-center">
-        <div className="space-y-3">
-          <p className="text-xs tracking-[0.2em] uppercase text-bakeryBrown/60">
-            Home-baked with love
-          </p>
-          <h1 className="text-3xl md:text-4xl font-serif text-bakeryBrown leading-snug">
-            Delicious Bites,
-            <br />
-            <span className="text-bakeryPrimary">baking memories</span> for your moments.
-          </h1>
-          <p className="text-sm text-bakeryBrown/70 max-w-md">
-            No maida, no preservatives, no refined sugar, no gluten. Just wholesome treats
-            crafted in a home kitchen for you and your loved ones.
-          </p>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {!user && (
-              <>
-                <Link to="/login" className="btn-primary text-xs">
-                  Login
-                </Link>
-                <Link to="/register" className="btn-outline text-xs">
-                  Sign Up
-                </Link>
-                <Link
-                  to="/admin/login"
-                  className="text-xs text-bakeryBrown/70 hover:text-bakeryBrown"
-                >
-                  Admin Login
-                </Link>
-              </>
-            )}
-            {user && user.role === 'user' && (
-              <Link to="/orders" className="btn-primary text-xs">
-                View My Orders
-              </Link>
-            )}
-            {user && user.role === 'admin' && (
-              <Link to="/admin/dashboard" className="btn-primary text-xs">
-                Go to Dashboard
-              </Link>
-            )}
-          </div>
-          <div className="text-[11px] text-bakeryBrown/60 space-y-1 mt-3">
-            <p>
-              Address: Delicious Bites, KTR Colony, Nizampet, Hyderabad - 500090 · Phone:
-              +91-7330909762
-            </p>
-            <p>
-              Delivery: Free within 3km (city). Outside city via Speed Post / DTDC. Kindly
-              order 1 day in advance.
-            </p>
-          </div>
-        </div>
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-bakeryPink to-bakerySoftPink rounded-full blur-3xl opacity-60" />
-          <div className="relative card p-6 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-bakerySoftPink to-white">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-bakeryPrimary to-[#ff8fab] shadow-lg flex items-center justify-center animate-[float_6s_ease-in-out_infinite]">
-              <span className="text-white font-serif text-xl">✨</span>
-            </div>
-            <p className="text-sm font-semibold text-bakeryBrown text-center">
-              Small-batch bakes,
-              <br />
-              made just for you.
-            </p>
-          </div>
-        </div>
+    <main className="mx-auto max-w-6xl px-4 py-8 md:py-12 space-y-7">
+      <section className="card p-6 md:p-8" data-anim>
+        <p className="text-xs uppercase tracking-[0.25em] text-bakeryBrown/60">Menu</p>
+        <h1 className="font-display text-4xl text-bakeryBrown mt-2">Browse All Bakery Items</h1>
+        <p className="text-sm text-bakeryBrown/75 mt-2">
+          Select a category to view available items. Cart updates instantly without page reload.
+        </p>
       </section>
 
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
-        {categories.map((c) => (
+      <div className="flex gap-2 overflow-x-auto pb-2" data-anim>
+        {categories.map((item) => (
           <button
-            key={c}
-            onClick={() => setCategory(c)}
-            className={`px-3 py-1 rounded-full text-xs whitespace-nowrap ${
-              category === c
-                ? 'bg-bakeryBrown text-white'
-                : 'bg-white border border-bakeryPink text-bakeryBrown'
+            type="button"
+            key={item}
+            onClick={() => setCategory(item)}
+            className={`px-3 py-2 rounded-full text-xs whitespace-nowrap border transition-colors ${
+              category === item
+                ? 'bg-bakeryBrown text-white border-bakeryBrown'
+                : 'bg-white border-bakeryPink text-bakeryBrown hover:bg-bakerySoftPink'
             }`}
           >
-            {c}
+            {item}
           </button>
         ))}
       </div>
 
-      {loading && <p className="text-sm text-bakeryBrown/70">Loading menu...</p>}
+      {loading && <p className="text-sm text-bakeryBrown/70">Loading menu items...</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && (
-        <section className="space-y-3">
+        <section className="space-y-3" data-anim>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-bakeryBrown">Our Menu</h2>
+            <h2 className="text-lg font-semibold text-bakeryBrown">{category} Items</h2>
+            <span className="text-xs text-bakeryBrown/60">{filteredProducts.length} products</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {filteredProducts.length === 0 ? (
+            <p className="card p-4 text-sm text-bakeryBrown/70">No items found in this category yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </section>
       )}
     </main>
@@ -150,4 +98,3 @@ const MenuPage = () => {
 };
 
 export default MenuPage;
-

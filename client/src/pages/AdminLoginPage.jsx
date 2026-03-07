@@ -8,16 +8,18 @@ const AdminLoginPage = () => {
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setSubmitting(true);
     setError('');
+
     try {
-      const res = await api.post('/auth/login', { email, password, admin: true });
-      login(res.data.token, res.data.user);
+      const response = await api.post('/auth/login', { email, password, admin: true });
+      login(response.data.token, response.data.user);
       navigate('/admin/dashboard');
     } catch (err) {
       console.error(err);
@@ -28,42 +30,43 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <AuthLayout title="Admin Login" subtitle="For Delicious Bites staff only">
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <Input label="Admin Email" type="email" value={email} onChange={setEmail} />
-        <Input label="Password" type="password" value={password} onChange={setPassword} />
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Logging in...' : 'Login as Admin'}
-        </button>
-      </form>
-    </AuthLayout>
+    <main className="min-h-screen flex items-center justify-center px-4 py-8">
+      <div className="card w-full max-w-md p-6 md:p-8 space-y-4" data-anim>
+        <p className="text-xs uppercase tracking-[0.25em] text-bakeryBrown/60">Admin Panel</p>
+        <h1 className="font-display text-3xl text-bakeryBrown">Admin Sign In</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <label className="block text-xs text-bakeryBrown/80">
+            Admin Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-field mt-1"
+              required
+            />
+          </label>
+
+          <label className="block text-xs text-bakeryBrown/80">
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field mt-1"
+              required
+            />
+          </label>
+
+          {error && <p className="text-xs text-red-600">{error}</p>}
+
+          <button type="submit" className="btn-primary w-full" disabled={submitting}>
+            {submitting ? 'Signing in...' : 'Sign In as Admin'}
+          </button>
+        </form>
+      </div>
+    </main>
   );
 };
 
-const AuthLayout = ({ title, subtitle, children }) => (
-  <main className="min-h-[70vh] flex items-center justify-center px-4">
-    <div className="card max-w-md w-full p-6 space-y-4">
-      <div>
-        <h1 className="text-xl font-semibold text-bakeryBrown mb-1">{title}</h1>
-        {subtitle && <p className="text-xs text-bakeryBrown/70">{subtitle}</p>}
-      </div>
-      {children}
-    </div>
-  </main>
-);
-
-const Input = ({ label, type = 'text', value, onChange }) => (
-  <label className="block text-xs text-bakeryBrown/80 space-y-1">
-    <span>{label}</span>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-full border border-bakeryPink px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bakeryPeach bg-white"
-    />
-  </label>
-);
-
 export default AdminLoginPage;
-

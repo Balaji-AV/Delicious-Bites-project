@@ -20,32 +20,47 @@ const Navbar = () => {
     navigate('/');
   };
 
+  const links = [
+    { label: 'Home', to: '/home' },
+    { label: 'Menu', to: '/menu' },
+    { label: 'About', to: '/about' },
+    { label: 'Account', to: '/account', requiresAuth: true }
+  ];
+
   return (
     <header className="bg-white/80 backdrop-blur border-b border-bakeryPink/60 sticky top-0 z-20">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#ffc8dd] to-bakeryPeach flex items-center justify-center shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <Link to="/home" className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#ffc8dd] to-bakeryPrimary flex items-center justify-center shadow-sm">
             <span className="text-bakeryBrown font-bold text-lg tracking-tight">DB</span>
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="font-semibold text-bakeryBrown tracking-wide">
-              Delicious Bites
+            <span className="font-display text-lg text-bakeryBrown tracking-wide">
+              DELICIOUS BITES
             </span>
-            <span className="text-[11px] text-bakeryBrown/70">
+            <span className="text-[11px] text-bakeryBrown/70 font-script text-sm">
               Baking memories with love
             </span>
           </div>
         </Link>
 
-        <nav className="flex items-center gap-5 text-sm">
-          <Link
-            to="/"
-            className={`nav-link ${
-              location.pathname === '/' ? 'nav-link--active text-bakeryBrown' : ''
-            }`}
-          >
-            Menu
-          </Link>
+        <nav className="flex items-center gap-4 text-sm flex-wrap justify-end">
+          {links
+            .filter((link) => (link.requiresAuth ? !!user && !isAdmin : true))
+            .map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`nav-link ${
+                  location.pathname.startsWith(link.to)
+                    ? 'nav-link--active text-bakeryBrown'
+                    : ''
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+
           {user && !isAdmin && (
             <Link
               to="/orders"
@@ -82,7 +97,7 @@ const Navbar = () => {
               </Link>
             </>
           )}
-          {!isAdmin && (
+          {!isAdmin && user && (
             <button
               type="button"
               onClick={openCart}

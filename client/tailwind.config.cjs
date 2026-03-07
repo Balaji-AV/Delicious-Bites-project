@@ -8,11 +8,25 @@ module.exports = {
         bakerySoftPink: '#fff5f8',
         bakeryPrimary: '#ff6f91',
         bakeryBrown: '#5C4033',
-        bakeryCream: '#fff5f8'
+        bakeryCream: '#fff8f2',
+        bakeryPistachio: '#d8f3dc',
+        bakeryRose: '#ffd6e0',
+        bakeryIvory: '#fffdf8'
       },
       fontFamily: {
-        sans: ['system-ui', 'sans-serif'],
-        serif: ['"Playfair Display"', 'serif']
+        sans: ['"Plus Jakarta Sans"', '"Segoe UI"', 'sans-serif'],
+        serif: ['"Playfair Display"', 'serif'],
+        display: ['"Fraunces"', 'serif'],
+        script: ['"Parisienne"', 'cursive']
+      },
+      keyframes: {
+        floaty: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' }
+        }
+      },
+      animation: {
+        floaty: 'floaty 7s ease-in-out infinite'
       }
     }
   },

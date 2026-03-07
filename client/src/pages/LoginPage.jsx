@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,17 +8,19 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setSubmitting(true);
     setError('');
+
     try {
-      const res = await api.post('/auth/login', { email, password });
-      login(res.data.token, res.data.user);
-      navigate('/');
+      const response = await api.post('/auth/login', { email, password });
+      login(response.data.token, response.data.user);
+      navigate('/home');
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Login failed');
@@ -27,43 +29,67 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleSignIn = () => {
+    setError('Google sign-in UI is ready. Connect it to your OAuth backend endpoint.');
+  };
+
   return (
-    <AuthLayout title="Login to Delicious Bites">
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <Input label="Email" type="email" value={email} onChange={setEmail} />
-        <Input label="Password" type="password" value={password} onChange={setPassword} />
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-    </AuthLayout>
+    <main className="min-h-screen grid md:grid-cols-2 bg-bakeryIvory">
+      <section className="hidden md:flex items-center justify-center p-10 bg-gradient-to-br from-bakeryRose/55 to-bakeryPistachio/50">
+        <div className="max-w-md space-y-3" data-anim>
+          <p className="text-xs uppercase tracking-[0.25em] text-bakeryBrown/60">Welcome Back</p>
+          <h1 className="font-display text-5xl text-bakeryBrown">DELICIOUS BITES</h1>
+          <p className="font-script text-2xl text-bakeryPrimary">baking memories with love</p>
+        </div>
+      </section>
+
+      <section className="flex items-center justify-center p-4 md:p-10">
+        <div className="card w-full max-w-md p-6 md:p-8 space-y-4" data-anim>
+          <h2 className="font-display text-3xl text-bakeryBrown">Sign In</h2>
+
+          <button type="button" onClick={handleGoogleSignIn} className="btn-outline w-full">
+            Continue with Google
+          </button>
+
+          <div className="text-center text-xs text-bakeryBrown/60">or</div>
+
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <label className="block text-xs text-bakeryBrown/80">
+              Email
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-field mt-1"
+                required
+              />
+            </label>
+
+            <label className="block text-xs text-bakeryBrown/80">
+              Password
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field mt-1"
+                required
+              />
+            </label>
+
+            {error && <p className="text-xs text-red-600">{error}</p>}
+
+            <button type="submit" className="btn-primary w-full" disabled={submitting}>
+              {submitting ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          <p className="text-xs text-bakeryBrown/70 text-center">
+            New customer? <Link to="/register" className="underline text-bakeryPrimary">Create account</Link>
+          </p>
+        </div>
+      </section>
+    </main>
   );
 };
 
-const AuthLayout = ({ title, subtitle, children }) => (
-  <main className="min-h-[70vh] flex items-center justify-center px-4">
-    <div className="card max-w-md w-full p-6 space-y-4">
-      <div>
-        <h1 className="text-xl font-semibold text-bakeryBrown mb-1">{title}</h1>
-        {subtitle && <p className="text-xs text-bakeryBrown/70">{subtitle}</p>}
-      </div>
-      {children}
-    </div>
-  </main>
-);
-
-const Input = ({ label, type = 'text', value, onChange }) => (
-  <label className="block text-xs text-bakeryBrown/80 space-y-1">
-    <span>{label}</span>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-full border border-bakeryPink px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bakeryPeach bg-white"
-    />
-  </label>
-);
-
 export default LoginPage;
-
