@@ -15,31 +15,59 @@ const createToken = (user) => {
 
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, phone, password } = req.body;
+    
+    // Validate required fields
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Name, email and password are required' });
     }
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return res.status(400).json({ message: 'User already exists' });
+    // Check if user already exists by email
+    const existingUser = await prisma.user.findUnique({ 
+      where: { email: email.toLowerCase().trim() } 
+    });
+    
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: 'User already exists',
+        suggestion: 'This email is already registered. Please login.' 
+      });
     }
 
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
+    // Create new user
     const user = await prisma.user.create({
-      data: { name, email, password: passwordHash, role: 'user' }
+      data: { 
+        name: name.trim(), 
+        email: email.toLowerCase().trim(), 
+        password: passwordHash, 
+        role: 'user' 
+      }
     });
+    
+    // Generate JWT token
     const token = createToken(user);
 
     res.status(201).json({
+      success: true,
       token,
       user: { id: user.id, name: user.name, email: user.email, role: user.role }
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Registration error:', err);
+    
+    // Handle Prisma unique constraint errors
+    if (err.code === 'P2002') {
+      return res.status(400).json({ 
+        message: 'User already exists',
+        suggestion: 'This email is already registered. Please login.' 
+      });
+    }
+    
+    res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
 
