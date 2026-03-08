@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 
 const WelcomePage = () => {
   return (
-    <main className="relative overflow-hidden">
+    <main className="relative overflow-hidden min-h-screen">
+      {/* Background Image Placeholder */}
+      <div className="absolute inset-0 -z-10">
+        <img src="/images/background-placeholder.jpg" alt="pictures" className="w-full h-full object-cover opacity-5" />
+      </div>
+      
       <section className="mx-auto max-w-6xl px-4 py-12 md:py-20 grid md:grid-cols-2 gap-8 items-center">
         <div className="space-y-5" data-anim>
           <p className="text-xs uppercase tracking-[0.3em] text-bakeryBrown/65">Home Bakery</p>

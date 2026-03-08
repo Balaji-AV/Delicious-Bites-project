@@ -74,33 +74,20 @@ const Navbar = () => {
             </Link>
           )}
           {isAdmin && (
-            <>
-              <Link
-                to="/admin/products"
-                className={`nav-link ${
-                  location.pathname.startsWith('/admin/products')
-                    ? 'nav-link--active text-bakeryBrown'
-                    : ''
-                }`}
-              >
-                Products
-              </Link>
-              <Link
-                to="/admin/orders"
-                className={`nav-link ${
-                  location.pathname.startsWith('/admin/orders')
-                    ? 'nav-link--active text-bakeryBrown'
-                    : ''
-                }`}
-              >
-                Orders
-              </Link>
-            </>
+            <Link
+              to="/admin/dashboard"
+              className={`nav-link ${
+                location.pathname.startsWith('/admin')
+                  ? 'nav-link--active text-bakeryBrown'
+                  : ''
+              }`}
+            >
+              Admin Panel
+            </Link>
           )}
           {!isAdmin && user && (
-            <button
-              type="button"
-              onClick={openCart}
+            <Link
+              to="/cart"
               className="relative nav-link"
             >
               Cart
@@ -109,7 +96,7 @@ const Navbar = () => {
                   {cartCount}
                 </span>
               )}
-            </button>
+            </Link>
           )}
           {!user && (
             <>

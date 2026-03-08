@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
   const { items, addToCart, updateQuantity } = useCart();
   const [bump, setBump] = useState(false);
 
@@ -26,9 +28,32 @@ const ProductCard = ({ product }) => {
     updateQuantity(product.id, next);
   };
 
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
   return (
-    <div className="card p-4 flex flex-col gap-3 bg-gradient-to-br from-[#fde2e4] via-white to-[#fff0f3] hover:shadow-md">
-      <div className="flex items-start justify-between gap-2">
+    <div className="card p-4 flex flex-col gap-3 bg-gradient-to-br from-[#fde2e4] via-white to-[#fff0f3] hover:shadow-md cursor-pointer transition-transform hover:scale-[1.02]">
+      {/* Product Image */}
+      <div 
+        onClick={handleCardClick}
+        className="w-full h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-[#FFD6DF] to-[#FFF7F9] flex items-center justify-center"
+      >
+        {product.imageUrl ? (
+          <img 
+            src={product.imageUrl} 
+            alt="pictures" 
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="text-center space-y-2">
+            <div className="text-5xl">🧁</div>
+            <p className="text-xs text-[#4A2C2A]/40 font-['Poppins',sans-serif]">Image coming soon</p>
+          </div>
+        )}
+      </div>
+      
+      <div onClick={handleCardClick} className="flex items-start justify-between gap-2">
         <div>
           <h3 className="font-semibold text-bakeryBrown">{product.name}</h3>
           <p className="text-xs text-bakeryBrown/70 mt-1">
@@ -60,7 +85,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-end mt-1">
+      <div className="flex items-center justify-end mt-1" onClick={(e) => e.stopPropagation()}>
         {disabled ? (
           <button
             className="btn-outline text-xs opacity-60 cursor-not-allowed"

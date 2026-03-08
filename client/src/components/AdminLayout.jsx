@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { getCancellationRequests, getFeedbackItems } from '../lib/localStore';
 import { subscribeToLiveEvents } from '../lib/liveEvents';
+import { useAuth } from '../contexts/AuthContext';
 
 const AdminLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
 
   return (
     <div className="min-h-[80vh] max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-[250px,1fr] gap-4">
@@ -16,19 +24,32 @@ const AdminLayout = () => {
 
         <nav className="space-y-1 text-sm">
           <AdminLink to="/admin/dashboard" active={location.pathname === '/admin/dashboard'}>
-            Dashboard
+            📊 Dashboard
           </AdminLink>
           <AdminLink to="/admin/products" active={location.pathname.startsWith('/admin/products')}>
-            Products
+            🧁 Products
           </AdminLink>
           <AdminLink to="/admin/orders" active={location.pathname.startsWith('/admin/orders')}>
-            Orders
+            📦 Orders
+          </AdminLink>
+          <AdminLink to="/admin/add-product" active={location.pathname === '/admin/add-product'}>
+            ➕ Add Product
           </AdminLink>
         </nav>
 
-        <Link to="/home" className="inline-flex text-[11px] text-bakeryBrown/70 hover:text-bakeryBrown">
-          Back to website
-        </Link>
+        <div className="border-t border-bakeryPink pt-3 space-y-1 text-sm">
+          <Link to="/home" className="inline-flex text-[11px] text-bakeryBrown/70 hover:text-bakeryBrown">
+            ← Back to website
+          </Link>
+          
+          <button
+            onClick={handleLogout}
+            className="w-full text-left px-3 py-2 rounded-full text-bakeryBrown/80 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 flex items-center gap-2"
+          >
+            <span>🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
       </aside>
 
       <section className="space-y-4">

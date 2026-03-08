@@ -65,7 +65,7 @@ const AdminProductsPage = () => {
     <main className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h1 className="font-display text-3xl text-bakeryBrown">Products</h1>
-        <button type="button" className="btn-primary text-xs" onClick={() => navigate('/admin/products/add')}>
+        <button type="button" className="btn-primary text-xs" onClick={() => navigate('/admin/add-product')}>
           Add New Product
         </button>
       </div>
@@ -97,7 +97,7 @@ const AdminProductsPage = () => {
                   </button>
                 </td>
                 <td className="py-2 pr-2 text-right space-x-2">
-                  <button type="button" className="text-bakeryBrown underline" onClick={() => navigate(`/admin/products/edit/${product.id}`)}>
+                  <button type="button" className="text-bakeryBrown underline" onClick={() => navigate(`/admin/edit-product/${product.id}`)}>
                     Edit
                   </button>
                   <button type="button" className="text-red-600 underline" onClick={() => remove(product)}>

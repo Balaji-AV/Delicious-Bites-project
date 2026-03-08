@@ -44,7 +44,13 @@ const HomePage = () => {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 md:py-12 space-y-12">
-      <section className="grid md:grid-cols-2 gap-8 items-center">
+      {/* Hero Section with Background */}
+      <section className="grid md:grid-cols-2 gap-8 items-center relative">
+        {/* Background Image Placeholder */}
+        <div className="absolute inset-0 -z-10 opacity-10 rounded-3xl overflow-hidden">
+          <img src="/images/background-placeholder.jpg" alt="pictures" className="w-full h-full object-cover" />
+        </div>
+        
         <div className="space-y-4" data-anim>
           <p className="text-xs uppercase tracking-[0.25em] text-bakeryBrown/65">DELICIOUS BITES</p>
           <h1 className="font-display text-4xl md:text-5xl text-bakeryBrown leading-tight">
