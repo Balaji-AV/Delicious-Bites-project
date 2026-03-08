@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../prisma');
 const { verifyToken, verifyUser } = require('../middleware/auth');
+const { broadcast } = require('../ws/broadcast');
 
 const router = express.Router();
 
@@ -55,6 +56,9 @@ router.post('/', verifyToken, verifyUser, async (req, res) => {
         items: true
       }
     });
+
+    // Broadcast new order to admin clients
+    broadcast('orders-changed', { orderId: order.id, action: 'created' });
 
     res.status(201).json(order);
   } catch (err) {

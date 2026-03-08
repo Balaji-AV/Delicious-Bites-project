@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+
+const resolveImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith('/uploads/')) return `${API_BASE}${url}`;
+  return url;
+};
+
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { items, addToCart, updateQuantity } = useCart();
@@ -33,21 +41,21 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="card p-4 flex flex-col gap-3 bg-gradient-to-br from-[#fde2e4] via-white to-[#fff0f3] hover:shadow-md cursor-pointer transition-transform hover:scale-[1.02]">
+    <div className="card card-animated p-4 flex flex-col gap-3 bg-gradient-to-br from-[#fde2e4] via-white to-[#fff0f3] cursor-pointer">
       {/* Product Image */}
       <div 
         onClick={handleCardClick}
-        className="w-full h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-[#FFD6DF] to-[#FFF7F9] flex items-center justify-center"
+        className="w-full h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-[#FFD6DF] to-[#FFF7F9] flex items-center justify-center group"
       >
         {product.imageUrl ? (
           <img 
-            src={product.imageUrl} 
+            src={resolveImageUrl(product.imageUrl)} 
             alt="pictures" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover img-reveal transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div className="text-center space-y-2">
-            <div className="text-5xl">🧁</div>
+            <div className="text-5xl animate-subtleFloat">🧁</div>
             <p className="text-xs text-[#4A2C2A]/40 font-['Poppins',sans-serif]">Image coming soon</p>
           </div>
         )}
@@ -95,7 +103,7 @@ const ProductCard = ({ product }) => {
           </button>
         ) : quantity === 0 ? (
           <button
-            className="btn-primary text-xs"
+            className="btn-primary text-xs btn-press"
             onClick={handleAdd}
           >
             Add to cart

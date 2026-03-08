@@ -27,7 +27,7 @@ const CartDrawer = () => {
     >
       {/* backdrop */}
       <div
-        className={`absolute inset-0 bg-black/20 transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-black/25 transition-opacity duration-300 backdrop-blur-sm ${
           isCartOpen ? 'opacity-100' : 'opacity-0'
         }`}
         onClick={closeCart}
@@ -55,7 +55,7 @@ const CartDrawer = () => {
           {items.map((item) => (
             <div
               key={item.product.id}
-              className="rounded-2xl bg-white border border-bakeryPink/60 px-3 py-2 text-xs flex items-center justify-between gap-3"
+              className="rounded-2xl bg-white border border-bakeryPink/60 px-3 py-2 text-xs flex items-center justify-between gap-3 cart-item-enter"
             >
               <div>
                 <p className="font-medium text-bakeryBrown">{item.product.name}</p>
@@ -103,7 +103,7 @@ const CartDrawer = () => {
           </div>
           <button
             type="button"
-            className="btn-primary w-full"
+            className="btn-primary w-full btn-press"
             disabled={items.length === 0}
             onClick={handleCheckoutClick}
           >

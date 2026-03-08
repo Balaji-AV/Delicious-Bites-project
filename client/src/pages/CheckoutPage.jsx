@@ -87,8 +87,8 @@ const CheckoutPage = () => {
   if (items.length === 0) {
     return (
       <main className="min-h-[70vh] flex items-center justify-center px-4">
-        <div className="text-center space-y-6 max-w-md animate-fadeIn">
-          <div className="text-8xl mb-4">🛒</div>
+        <div className="text-center space-y-6 max-w-md animate-scaleIn">
+          <div className="text-8xl mb-4 animate-subtleFloat">🛒</div>
           <h1 className="text-3xl font-bold text-[#4A2C2A] font-['Pacifico',cursive]">
             Your Cart is Empty
           </h1>
@@ -110,9 +110,9 @@ const CheckoutPage = () => {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 md:py-12">
+    <main className="max-w-7xl mx-auto px-4 py-8 md:py-12 page-enter">
       {/* Header */}
-      <div className="mb-8 animate-fadeIn">
+      <div className="mb-8 animate-slideUp">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4A2C2A] font-['Pacifico',cursive] mb-2">
           Checkout
         </h1>
@@ -123,7 +123,7 @@ const CheckoutPage = () => {
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* LEFT SIDE - Cart Summary */}
-        <div className="lg:col-span-1 space-y-4 animate-fadeIn">
+        <div className="lg:col-span-1 space-y-4 animate-slideUp delay-100">
           <div className="bg-white rounded-3xl border-2 border-[#FFD6DF] p-6 sticky top-24">
             <h2 className="text-xl font-bold text-[#4A2C2A] font-['Poppins',sans-serif] mb-4">
               Order Summary
@@ -152,7 +152,7 @@ const CheckoutPage = () => {
         </div>
 
         {/* RIGHT SIDE - Delivery Form */}
-        <div className="lg:col-span-2 space-y-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+        <div className="lg:col-span-2 space-y-6 animate-slideUp delay-200">
           <div className="bg-white rounded-3xl border-2 border-[#FFD6DF] p-8">
             <h2 className="text-2xl font-bold text-[#4A2C2A] font-['Pacifico',cursive] mb-6">
               Delivery Details
@@ -263,7 +263,7 @@ const CheckoutPage = () => {
               bg-gradient-to-r from-[#F78CA2] to-[#FF6B81]
               text-white shadow-xl shadow-[#F78CA2]/30
               hover:shadow-2xl hover:shadow-[#F78CA2]/40 hover:scale-[1.02]
-              active:scale-[0.98]
+              active:scale-[0.98] btn-press animate-pulseGlow
               transition-all duration-300
               flex items-center justify-center gap-3
             "

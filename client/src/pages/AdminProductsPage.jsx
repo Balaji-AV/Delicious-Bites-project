@@ -62,15 +62,15 @@ const AdminProductsPage = () => {
   };
 
   return (
-    <main className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-2">
+    <main className="space-y-4 page-enter">
+      <div className="flex items-center justify-between flex-wrap gap-2 animate-slideUp">
         <h1 className="font-display text-3xl text-bakeryBrown">Products</h1>
-        <button type="button" className="btn-primary text-xs" onClick={() => navigate('/admin/add-product')}>
+        <button type="button" className="btn-primary text-xs btn-press" onClick={() => navigate('/admin/add-product')}>
           Add New Product
         </button>
       </div>
 
-      <section className="card p-4 overflow-x-auto" data-anim>
+      <section className="card p-4 overflow-x-auto animate-slideUp delay-150">
         <table className="min-w-full text-left text-xs">
           <thead className="border-b border-bakeryPink/70">
             <tr>
@@ -82,8 +82,8 @@ const AdminProductsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className="border-b border-bakeryPink/40 last:border-none">
+            {products.map((product, index) => (
+              <tr key={product.id} className="border-b border-bakeryPink/40 last:border-none row-animate" style={{ animationDelay: `${index * 50}ms` }}>
                 <td className="py-2 pr-2 text-bakeryBrown font-medium">{product.name}</td>
                 <td className="py-2 pr-2">{product.category}</td>
                 <td className="py-2 pr-2">₹{product.price.toFixed(2)}</td>

@@ -1,10 +1,13 @@
 import React from 'react';
 
 const Footer = () => (
-  <footer className="mt-10 border-t border-bakeryPink/50 bg-white/85 backdrop-blur">
+  <footer className="mt-10 border-t border-bakeryPink/50 bg-white/85 backdrop-blur animate-fadeIn">
     <div className="max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-3 gap-5 text-[12px] text-bakeryBrown/75">
       <div>
-        <p className="font-display text-bakeryBrown text-xl">DELICIOUS BITES</p>
+        <div className="flex items-center gap-2 mb-1">
+          <img src="/images/logo.jpeg" alt="Delicious Bites" className="h-10 w-auto object-contain logo-smooth" />
+          <p className="font-display text-bakeryBrown text-xl">DELICIOUS BITES</p>
+        </div>
         <p className="font-script text-lg text-bakeryPrimary">Baking memories with love</p>
       </div>
       <div>

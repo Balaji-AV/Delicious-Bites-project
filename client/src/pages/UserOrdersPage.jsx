@@ -68,21 +68,28 @@ const UserOrdersPage = () => {
   };
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8 md:py-12 space-y-4">
-      <h1 className="font-display text-3xl text-bakeryBrown">My Orders</h1>
-      {loading && <p className="text-sm text-bakeryBrown/70">Loading orders...</p>}
+    <main className="mx-auto max-w-5xl px-4 py-8 md:py-12 space-y-4 page-enter">
+      <h1 className="font-display text-3xl text-bakeryBrown animate-slideUp">My Orders</h1>
+      {loading && (
+        <div className="flex items-center justify-center py-16 animate-fadeIn">
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-4xl animate-bounce">📦</span>
+            <p className="text-sm text-bakeryBrown/70">Loading orders...</p>
+          </div>
+        </div>
+      )}
 
       {!loading && orders.length === 0 && (
-        <p className="card p-4 text-sm text-bakeryBrown/75">You have not placed any orders yet.</p>
+        <p className="card p-4 text-sm text-bakeryBrown/75 animate-scaleIn">You have not placed any orders yet.</p>
       )}
 
       <div className="space-y-3">
-        {orders.map((order) => {
+        {orders.map((order, index) => {
           const isRequested = requestMap.has(order.id);
           const canRequestCancel = order.status?.toLowerCase() !== 'completed' && order.status?.toLowerCase() !== 'cancelled';
 
           return (
-            <article key={order.id} className="card p-4 text-sm space-y-2" data-anim>
+            <article key={order.id} className="card p-4 text-sm space-y-2 card-animated row-animate" style={{ animationDelay: `${index * 80}ms` }}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold text-bakeryBrown">Order #{order.id}</p>
                 <p className="text-xs text-bakeryBrown/65">{new Date(order.createdAt).toLocaleString()}</p>

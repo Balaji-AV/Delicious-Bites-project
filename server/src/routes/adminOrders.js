@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../prisma');
 const { verifyToken, verifyAdmin } = require('../middleware/auth');
+const { broadcast } = require('../ws/broadcast');
 
 const router = express.Router();
 
@@ -55,6 +56,10 @@ router.patch('/:id/status', verifyToken, verifyAdmin, async (req, res) => {
           }
         }
       });
+
+      // Broadcast order status change to all clients
+      broadcast('orders-changed', { orderId: id, status });
+
       res.json(order);
     } catch (err) {
       if (err.code === 'P2025') {

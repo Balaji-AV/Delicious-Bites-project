@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import PageLoader from './components/PageLoader';
 import Navbar from './components/Navbar';
 import MenuPage from './pages/MenuPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -14,6 +15,7 @@ import AdminProductsPage from './pages/AdminProductsPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminAddProductPage from './pages/AdminAddProductPage';
 import AdminEditProductPage from './pages/AdminEditProductPage';
+import AdminCustomersPage from './pages/AdminCustomersPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdminLoginPage from './pages/AdminLoginPage';
@@ -35,8 +37,15 @@ import { initializeAnime } from './lib/animeInit';
 const AppRoutes = () => {
   const { user, token, loading } = useAuth();
   const location = useLocation();
+  const [showLoader, setShowLoader] = useState(true);
+  const [pageReady, setPageReady] = useState(false);
 
   const hideLayout = ['/', '/login', '/register', '/admin/login', '/admin/setup', '/payment-success'].includes(location.pathname);
+
+  const handleLoaderComplete = useCallback(() => {
+    setShowLoader(false);
+    setPageReady(true);
+  }, []);
 
   useEffect(() => {
     const cleanup = connectRealtimeSocket(token);
@@ -47,8 +56,10 @@ const AppRoutes = () => {
   }, [token]);
 
   useEffect(() => {
-    initializeAnime();
-  }, [location.pathname]);
+    if (pageReady) {
+      initializeAnime();
+    }
+  }, [location.pathname, pageReady]);
 
   if (loading) return null;
 
@@ -56,6 +67,7 @@ const AppRoutes = () => {
 
   return (
     <>
+      {showLoader && <PageLoader onComplete={handleLoaderComplete} />}
       {!hideLayout && <Navbar />}
       {!hideLayout && <CartDrawer />}
       <Routes>
@@ -89,6 +101,7 @@ const AppRoutes = () => {
           <Route path="add-product" element={<AdminAddProductPage />} />
           <Route path="edit-product/:id" element={<AdminEditProductPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />
+          <Route path="customers" element={<AdminCustomersPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>

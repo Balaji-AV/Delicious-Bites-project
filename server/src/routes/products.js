@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../prisma');
 const { verifyToken, verifyAdmin } = require('../middleware/auth');
+const { broadcast } = require('../ws/broadcast');
 
 const router = express.Router();
 
@@ -67,6 +68,8 @@ router.post('/', verifyToken, verifyAdmin, async (req, res) => {
       }
     });
 
+    broadcast('products-changed', { productId: product.id, action: 'created' });
+
     res.status(201).json(product);
   } catch (err) {
     console.error(err);
@@ -100,6 +103,7 @@ router.put('/:id', verifyToken, verifyAdmin, async (req, res) => {
         where: { id },
         data
       });
+      broadcast('products-changed', { productId: id, action: 'updated' });
       res.json(product);
     } catch (err) {
       if (err.code === 'P2025') {
@@ -123,6 +127,7 @@ router.delete('/:id', verifyToken, verifyAdmin, async (req, res) => {
 
     try {
       await prisma.product.delete({ where: { id } });
+      broadcast('products-changed', { productId: id, action: 'deleted' });
       res.json({ message: 'Product deleted' });
     } catch (err) {
       if (err.code === 'P2025') {
@@ -154,6 +159,7 @@ router.patch('/:id/availability', verifyToken, verifyAdmin, async (req, res) => 
         where: { id },
         data: { availability }
       });
+      broadcast('products-changed', { productId: id, action: 'availability' });
       res.json(product);
     } catch (err) {
       if (err.code === 'P2025') {

@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+
+const resolveImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith('/uploads/')) return `${API_BASE}${url}`;
+  return url;
+};
+
 const ProductGallery = ({ product }) => {
   const [selectedImage, setSelectedImage] = useState(0);
   
   // Create array of image placeholders
   const images = [
-    product.imageUrl || '/images/product-placeholder.jpg',
+    resolveImageUrl(product.imageUrl) || '/images/product-placeholder.jpg',
     '/images/product-placeholder.jpg',
     '/images/product-placeholder.jpg',
     '/images/product-placeholder.jpg'

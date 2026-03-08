@@ -28,12 +28,10 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="bg-white/80 backdrop-blur border-b border-bakeryPink/60 sticky top-0 z-20">
+    <header className="bg-white/80 backdrop-blur border-b border-bakeryPink/60 sticky top-0 z-20 navbar-animated">
       <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <Link to="/home" className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#ffc8dd] to-bakeryPrimary flex items-center justify-center shadow-sm">
-            <span className="text-bakeryBrown font-bold text-lg tracking-tight">DB</span>
-          </div>
+          <img src="/images/logo.jpeg" alt="Delicious Bites" className="h-10 w-auto object-contain logo-smooth" />
           <div className="flex flex-col leading-tight">
             <span className="font-display text-lg text-bakeryBrown tracking-wide">
               DELICIOUS BITES

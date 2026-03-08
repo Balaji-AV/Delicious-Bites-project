@@ -1,21 +1,10 @@
+import anime from 'animejs';
+
 let isInitialized = false;
 
-export const initializeAnime = async ({ selector = '[data-anim]', options = {} } = {}) => {
-  if (isInitialized) return null;
-
+export const initializeAnime = ({ selector = '[data-anim]', options = {} } = {}) => {
   const targets = document.querySelectorAll(selector);
   if (!targets.length) return null;
-
-  // The caller can install anime.js later and this bootstrap will start working.
-  const dynamicImport = new Function('mod', 'return import(mod)');
-  const animeModule = await dynamicImport('animejs').catch(() => null);
-  const anime = animeModule?.default || animeModule?.anime || animeModule;
-
-  if (!anime) {
-    return null;
-  }
-
-  isInitialized = true;
 
   return anime({
     targets,

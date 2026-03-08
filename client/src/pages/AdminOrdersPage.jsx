@@ -94,11 +94,18 @@ const AdminOrdersPage = () => {
   };
 
   return (
-    <main className="space-y-4">
-      <h1 className="font-display text-3xl text-bakeryBrown">Orders & Moderation</h1>
-      {loading && <p className="text-sm text-bakeryBrown/70">Loading orders...</p>}
+    <main className="space-y-4 page-enter">
+      <h1 className="font-display text-3xl text-bakeryBrown animate-slideUp">Orders & Moderation</h1>
+      {loading && (
+        <div className="flex items-center justify-center py-16 animate-fadeIn">
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-4xl animate-bounce">📦</span>
+            <p className="text-sm text-bakeryBrown/70">Loading orders...</p>
+          </div>
+        </div>
+      )}
 
-      <section className="card p-4 overflow-x-auto" data-anim>
+      <section className="card p-4 overflow-x-auto animate-slideUp delay-150">
         <h2 className="text-lg font-semibold text-bakeryBrown mb-3">Customer Orders</h2>
         <table className="min-w-full text-left text-xs">
           <thead className="border-b border-bakeryPink/70">
@@ -159,7 +166,7 @@ const AdminOrdersPage = () => {
         </table>
       </section>
 
-      <section className="card p-4" data-anim>
+      <section className="card p-4 animate-slideUp delay-300">
         <h2 className="text-lg font-semibold text-bakeryBrown">Customer Feedback Moderation</h2>
         <div className="mt-3 space-y-2">
           {feedbackItems.length === 0 && <p className="text-sm text-bakeryBrown/70">No feedback yet.</p>}
