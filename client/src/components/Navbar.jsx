@@ -71,18 +71,7 @@ const Navbar = () => {
               My Orders
             </Link>
           )}
-          {isAdmin && (
-            <Link
-              to="/admin/dashboard"
-              className={`nav-link ${
-                location.pathname.startsWith('/admin')
-                  ? 'nav-link--active text-bakeryBrown'
-                  : ''
-              }`}
-            >
-              Admin Panel
-            </Link>
-          )}
+
           {!isAdmin && user && (
             <Link
               to="/cart"
@@ -103,9 +92,6 @@ const Navbar = () => {
               </Link>
               <Link to="/register" className="btn-primary px-3 py-1 text-xs">
                 Sign Up
-              </Link>
-              <Link to="/admin/login" className="text-xs text-bakeryBrown/70 nav-link">
-                Admin
               </Link>
             </>
           )}

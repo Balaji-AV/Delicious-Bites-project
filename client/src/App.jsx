@@ -19,6 +19,7 @@ import AdminCustomersPage from './pages/AdminCustomersPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdminLoginPage from './pages/AdminLoginPage';
+import AdminWelcomePage from './pages/AdminWelcomePage';
 import AdminSetupPage from './pages/AdminSetupPage';
 import WelcomePage from './pages/WelcomePage';
 import HomePage from './pages/HomePage';
@@ -40,7 +41,7 @@ const AppRoutes = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [pageReady, setPageReady] = useState(false);
 
-  const hideLayout = ['/', '/login', '/register', '/admin/login', '/admin/setup', '/payment-success'].includes(location.pathname);
+  const hideLayout = ['/', '/login', '/register', '/admin/login', '/admin/setup', '/payment-success'].includes(location.pathname) || location.pathname.startsWith('/admin/');
 
   const handleLoaderComplete = useCallback(() => {
     setShowLoader(false);
@@ -80,6 +81,7 @@ const AppRoutes = () => {
         <Route path="/account" element={<AccountPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin" element={<AdminWelcomePage />} />
         <Route path="/admin/setup" element={<AdminSetupPage />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/checkout" element={<UserGuard element={<CheckoutPage />} />} />

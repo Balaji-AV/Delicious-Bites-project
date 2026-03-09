@@ -79,13 +79,9 @@ const LoginPage = () => {
       // Show success toast
       setToast({ message: '🎉 Welcome back! Redirecting...', type: 'success' });
 
-      // Redirect based on user role
+      // Redirect to home
       setTimeout(() => {
-        if (response.data.user.role === 'admin') {
-          navigate('/admin/dashboard');
-        } else {
-          navigate('/home');
-        }
+        navigate('/home');
       }, 1000);
 
     } catch (err) {
