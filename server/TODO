@@ -1,0 +1,6 @@
+Check VERCEL deploy
+check package.json file for base path
+change git remote url
+push change to base path
+sync fork
+test by redeploying
